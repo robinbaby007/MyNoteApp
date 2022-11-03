@@ -10,31 +10,84 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.ViewCompat
 
+
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+
+    primary = Violet10,
+    onPrimary = Violet20,
+    primaryContainer = Violet30,
+    onPrimaryContainer = Violet90,
+    inversePrimary = Violet40,
+
+    secondary = DarkViolet80,
+    onSecondary = DarkViolet20,
+    secondaryContainer = DarkViolet30,
+    onSecondaryContainer = DarkViolet90,
+
+
+    tertiary = Green80,
+    onTertiary = Green20,
+    tertiaryContainer = Green30,
+    onTertiaryContainer = Violet90,
+
+    error = Red80,
+    onError = Red20,
+    errorContainer = Red30,
+    onErrorContainer = Red90,
+
+    background = bg10,
+    onBackground = bg90,
+
+    surface = surface30,
+    onSurface = surface80,
+    inverseSurface = surface90,
+    inverseOnSurface = surface10,
+    surfaceVariant = surface30,
+    onSurfaceVariant = surface80,
+    outline = surface80
+
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
 
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
+    primary = Violet40,
     onPrimary = Color.White,
+    primaryContainer = Violet90,
+    onPrimaryContainer = Violet10,
+    inversePrimary = Violet80,
+
+    secondary = DarkViolet40,
     onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    secondaryContainer = DarkViolet90,
+    onSecondaryContainer = DarkViolet10,
+
+
+    tertiary = Green40,
+    onTertiary =  Color.White,
+    tertiaryContainer = Green90,
+    onTertiaryContainer = Violet10,
+
+    error = Red40,
+    onError =  Color.White,
+    errorContainer = Red90,
+    onErrorContainer = Red10,
+
+    background =  bg90,
+    onBackground = bg10,
+
+    surface = surface90,
+    onSurface = surface30,
+    inverseSurface = surface20,
+    inverseOnSurface = surface90,
+    surfaceVariant = surface90,
+    onSurfaceVariant = surface30,
+    outline = surface40
 )
 
 @Composable
@@ -45,7 +98,7 @@ fun MyNoteAppTheme(
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+        dynamicColor-> {
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
