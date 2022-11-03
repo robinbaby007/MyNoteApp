@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">MyNoteApp</string>
+    <string name="login_with_google">Login with Google</string>
+    <string name="web_api_key">526337558105-l40hlc4tdo72p4l2jg7gs55k660kanqh.apps.googleusercontent.com</string>
+
+
+
+
 </resources>

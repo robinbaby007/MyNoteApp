@@ -1,4 +1,4 @@
-package com.example.mynoteapp.ui.theme
+package com.example.mynoteapp
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
