@@ -10,37 +10,52 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mynoteapp.domian.AuthRepository
+import com.example.mynoteapp.domian.use_cases.UseCases
 import com.example.mynoteapp.utils.Response
 import com.google.android.gms.auth.api.identity.BeginSignInResult
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.auth.AuthCredential
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val authRepository: AuthRepository, val signInClient: SignInClient
+    private val useCases: UseCases, val signInClient: SignInClient
 ) : ViewModel() {
 
-    val isUserAuthenticated = authRepository.isUserAuthenticatedInFirebase
+    var isUserAuthenticated by mutableStateOf(false)
 
     private var oneTapSignInResponse by mutableStateOf<Response<BeginSignInResult>>(Response.Loading)
 
     var signInWithGoogleResponse by mutableStateOf<Response<Boolean>>(Response.Success(false))
 
-    private var isLoading by mutableStateOf(true)
+    var isLoading by mutableStateOf(false)
 
     var isError by mutableStateOf("")
 
     lateinit var launcher: ManagedActivityResultLauncher<IntentSenderRequest, ActivityResult>
 
 
+    init {
+
+        viewModelScope.launch {
+
+            useCases.userAuthenticatedOrNot.invoke().collect {
+                isUserAuthenticated = it
+
+            }
+
+        }
+    }
+
+
     fun oneTap() {
         viewModelScope.launch {
 
-            when (val oneTap = authRepository.oneTapSignInWithGoogle()) {
+            when (val oneTap = useCases.oneTapSignIn.invoke()) {
 
                 is Response.Loading -> {
                     isLoading = true
@@ -64,7 +79,26 @@ class LoginViewModel @Inject constructor(
 
     fun signInWithGoogle(googleCredential: AuthCredential) {
         viewModelScope.launch {
-            signInWithGoogleResponse = authRepository.firebaseSignInWithGoogle(googleCredential)
+
+
+            when (val signInWithGoogleResponseTemp =
+                useCases.firebaseSignInWithGoogle(googleCredential)) {
+
+                is Response.Loading -> isLoading = true
+                is Response.Success -> {
+                    isLoading = false
+                    signInWithGoogleResponse = signInWithGoogleResponseTemp
+
+                    Log.e("isUserAuthenticated", "$isUserAuthenticated")
+
+                }
+                is Response.Failure -> {
+                    isLoading = false
+                    isError = signInWithGoogleResponseTemp.e.toString()
+                }
+
+            }
+
         }
     }
 

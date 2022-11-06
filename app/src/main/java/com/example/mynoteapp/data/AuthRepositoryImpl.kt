@@ -1,6 +1,7 @@
 package com.example.mynoteapp.data
 
 
+import android.util.Log
 import com.example.mynoteapp.domian.AuthRepository
 import com.example.mynoteapp.utils.Constants
 import com.example.mynoteapp.utils.Constants.CREATED_AT
@@ -19,6 +20,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Named
@@ -32,13 +37,17 @@ class AuthRepositoryImpl @Inject constructor(
     private val fbAuth: FirebaseAuth,
     private val db: FirebaseFirestore
 ) : AuthRepository {
-    override val isUserAuthenticatedInFirebase: Boolean = fbAuth.currentUser != null
+
+    override fun isUserAuthenticatedInFirebase(): Flow<Boolean> {
+        return flow<Boolean> { fbAuth.currentUser != null }.flowOn(Dispatchers.IO)
+    }
 
     override suspend fun oneTapSignInWithGoogle(): Response<BeginSignInResult> {
 
         return try {
             Response.Loading
             val signInResult = oneTapClient.beginSignIn(signInRequest).await()
+
             Response.Success(signInResult)
         } catch (e: Exception) {
             try {
@@ -68,6 +77,7 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     private suspend fun addUserToFireStore() {
+
         fbAuth.currentUser?.apply {
             val user = toUser()
             db.collection(USERS).document(uid).set(user).await()

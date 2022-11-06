@@ -5,6 +5,10 @@ import android.content.Context
 import com.example.mynoteapp.R
 import com.example.mynoteapp.data.AuthRepositoryImpl
 import com.example.mynoteapp.domian.AuthRepository
+import com.example.mynoteapp.domian.use_cases.FirebaseSignInWithGoogle
+import com.example.mynoteapp.domian.use_cases.OneTapSignIn
+import com.example.mynoteapp.domian.use_cases.UseCases
+import com.example.mynoteapp.domian.use_cases.UserAuthenticatedOrNot
 import com.example.mynoteapp.utils.Constants.SIGN_IN_REQUEST
 import com.example.mynoteapp.utils.Constants.SIGN_UP_REQUEST
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
@@ -99,5 +103,14 @@ object AppModule {
         db: FirebaseFirestore
     ): AuthRepository = AuthRepositoryImpl(signInRequest, signUpRequest, oneTapClient, fbAuth, db)
 
+
+    @Provides
+    @Singleton
+    fun provideUseCase(authRepository: AuthRepository): UseCases =
+        UseCases(
+            OneTapSignIn(authRepository),
+            UserAuthenticatedOrNot(authRepository),
+            FirebaseSignInWithGoogle(authRepository)
+        )
 
 }

@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.mynoteapp.presentation.home.Home
 import com.example.mynoteapp.presentation.login.Login
 import com.example.mynoteapp.ui.theme.MyNoteAppTheme
 import com.example.mynoteapp.utils.Screens
@@ -40,11 +41,11 @@ fun NoteNavigation() {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Screens.LoginScreen.route) {
         composable(Screens.LoginScreen.route) {
-            Login()
+            Login(navController)
         }
 
         composable(Screens.HomeScreen.route) {
-
+            Home(navController)
         }
     }
 
