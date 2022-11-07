@@ -76,7 +76,6 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     private suspend fun addUserToFireStore() {
-
         fbAuth.currentUser?.apply {
             val user = toUser()
             db.collection(USERS).document(uid).set(user).await()
@@ -85,10 +84,10 @@ class AuthRepositoryImpl @Inject constructor(
 
 
     private fun FirebaseUser.toUser() = mapOf(
-        Constants.DISPLAY_NAME to displayName,
-        Constants.EMAIL to email,
-        Constants.PHOTO_URL to photoUrl?.toString(),
-        Constants.CREATED_AT to FieldValue.serverTimestamp()
+        DISPLAY_NAME to displayName,
+        EMAIL to email,
+        PHOTO_URL to photoUrl?.toString(),
+        CREATED_AT to FieldValue.serverTimestamp()
     )
 
 }

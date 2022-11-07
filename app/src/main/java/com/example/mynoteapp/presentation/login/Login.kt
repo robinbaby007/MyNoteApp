@@ -46,7 +46,6 @@ fun Login(navController: NavController, viewModel: LoginViewModel = hiltViewMode
         }
 
     if (viewModel.isUserAuthenticated || viewModel.isOneTapSignInSuccess) {
-
         navController.apply {
             popBackStack()
             navigate(Screens.HomeScreen.route)

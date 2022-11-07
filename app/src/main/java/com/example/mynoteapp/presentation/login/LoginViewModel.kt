@@ -11,11 +11,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mynoteapp.domian.AuthRepository
 import com.example.mynoteapp.domian.use_cases.UseCases
+import com.example.mynoteapp.utils.Constants
 import com.example.mynoteapp.utils.Response
 import com.google.android.gms.auth.api.identity.BeginSignInResult
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -24,9 +27,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val useCases: UseCases, val signInClient: SignInClient,
+    private val useCases: UseCases,
+    val signInClient: SignInClient,
+    db: FirebaseFirestore,
+    firebaseAuth: FirebaseAuth
 
-    ) : ViewModel() {
+) : ViewModel() {
 
     var isUserAuthenticated by mutableStateOf(false)
 
@@ -36,10 +42,9 @@ class LoginViewModel @Inject constructor(
 
     var isLoading by mutableStateOf(false)
 
-    var isError by mutableStateOf("")
+    private var isError by mutableStateOf("")
 
     lateinit var launcher: ManagedActivityResultLauncher<IntentSenderRequest, ActivityResult>
-
 
     init {
 
@@ -47,13 +52,12 @@ class LoginViewModel @Inject constructor(
 
             useCases.userAuthenticatedOrNot.invoke().collect {
                 isUserAuthenticated = it
-                Log.e("invokedd","$it" )
+
 
             }
 
         }
     }
-
 
     fun oneTap() {
         viewModelScope.launch {
@@ -73,7 +77,7 @@ class LoginViewModel @Inject constructor(
                 is Response.Failure -> {
                     isLoading = false
                     isError = oneTap.e.toString()
-                 }
+                }
 
             }
 
@@ -91,7 +95,7 @@ class LoginViewModel @Inject constructor(
                 is Response.Loading -> isLoading = true
                 is Response.Success -> {
                     isLoading = false
-                    isOneTapSignInSuccess = signInWithGoogleResponseTemp.data?:false
+                    isOneTapSignInSuccess = signInWithGoogleResponseTemp.data ?: false
 
 
                 }
@@ -102,11 +106,11 @@ class LoginViewModel @Inject constructor(
 
             }
 
-           /* useCases.userAuthenticatedOrNot.invoke().collect {
-                isUserAuthenticated = it
-                Log.e("invokedd","$it" )
+            /* useCases.userAuthenticatedOrNot.invoke().collect {
+                 isUserAuthenticated = it
+                 Log.e("invokedd","$it" )
 
-            }*/
+             }*/
 
         }
 
