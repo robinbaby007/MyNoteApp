@@ -15,6 +15,7 @@ import com.example.mynoteapp.utils.Response
 import com.google.android.gms.auth.api.identity.BeginSignInResult
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.auth.AuthCredential
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -23,14 +24,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val useCases: UseCases, val signInClient: SignInClient
-) : ViewModel() {
+    private val useCases: UseCases, val signInClient: SignInClient,
+
+    ) : ViewModel() {
 
     var isUserAuthenticated by mutableStateOf(false)
 
     private var oneTapSignInResponse by mutableStateOf<Response<BeginSignInResult>>(Response.Loading)
 
-    var signInWithGoogleResponse by mutableStateOf<Response<Boolean>>(Response.Success(false))
+    var isOneTapSignInSuccess by mutableStateOf(false)
 
     var isLoading by mutableStateOf(false)
 
@@ -45,6 +47,7 @@ class LoginViewModel @Inject constructor(
 
             useCases.userAuthenticatedOrNot.invoke().collect {
                 isUserAuthenticated = it
+                Log.e("invokedd","$it" )
 
             }
 
@@ -70,10 +73,11 @@ class LoginViewModel @Inject constructor(
                 is Response.Failure -> {
                     isLoading = false
                     isError = oneTap.e.toString()
-                    Log.e("LogMeDude", isError)
-                }
+                 }
 
             }
+
+
         }
     }
 
@@ -87,9 +91,8 @@ class LoginViewModel @Inject constructor(
                 is Response.Loading -> isLoading = true
                 is Response.Success -> {
                     isLoading = false
-                    signInWithGoogleResponse = signInWithGoogleResponseTemp
+                    isOneTapSignInSuccess = signInWithGoogleResponseTemp.data?:false
 
-                    Log.e("isUserAuthenticated", "$isUserAuthenticated")
 
                 }
                 is Response.Failure -> {
@@ -99,14 +102,21 @@ class LoginViewModel @Inject constructor(
 
             }
 
+           /* useCases.userAuthenticatedOrNot.invoke().collect {
+                isUserAuthenticated = it
+                Log.e("invokedd","$it" )
+
+            }*/
+
         }
+
+
     }
 
 
     private fun launch(signInResult: BeginSignInResult) {
         val intent = IntentSenderRequest.Builder(signInResult.pendingIntent.intentSender).build()
         launcher.launch(intent)
-        Log.e("LogMeDude", "launched")
     }
 
 }

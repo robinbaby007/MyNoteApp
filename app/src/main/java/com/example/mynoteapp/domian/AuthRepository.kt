@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 
 interface AuthRepository{
-    fun isUserAuthenticatedInFirebase() : Flow<Boolean>
+    val isUserAuthenticatedInFirebase : Flow<Boolean>
     suspend fun oneTapSignInWithGoogle() : Response<BeginSignInResult>
     suspend fun firebaseSignInWithGoogle(googleCredential: AuthCredential) : Response<Boolean>
 

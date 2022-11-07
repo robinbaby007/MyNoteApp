@@ -38,9 +38,8 @@ class AuthRepositoryImpl @Inject constructor(
     private val db: FirebaseFirestore
 ) : AuthRepository {
 
-    override fun isUserAuthenticatedInFirebase(): Flow<Boolean> {
-        return flow<Boolean> { fbAuth.currentUser != null }.flowOn(Dispatchers.IO)
-    }
+    override var isUserAuthenticatedInFirebase: Flow<Boolean> = flow{ emit(fbAuth.currentUser!=null)}.flowOn(Dispatchers.IO)
+
 
     override suspend fun oneTapSignInWithGoogle(): Response<BeginSignInResult> {
 
@@ -69,7 +68,7 @@ class AuthRepositoryImpl @Inject constructor(
             val isNewUser = authResult.additionalUserInfo?.isNewUser ?: false
             if (isNewUser) {
                 addUserToFireStore()
-            }
+             }
             Response.Success(true)
         } catch (e: Exception) {
             Response.Failure(e)

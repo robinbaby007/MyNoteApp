@@ -10,6 +10,6 @@ import javax.inject.Inject
 class UserAuthenticatedOrNot @Inject constructor(private val authRepository: AuthRepository) {
 
     operator fun invoke(): Flow<Boolean> {
-        return authRepository.isUserAuthenticatedInFirebase()
+        return authRepository.isUserAuthenticatedInFirebase
     }
 }
