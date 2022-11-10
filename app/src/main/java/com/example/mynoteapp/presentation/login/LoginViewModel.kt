@@ -29,8 +29,6 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val useCases: UseCases,
     val signInClient: SignInClient,
-    db: FirebaseFirestore,
-    firebaseAuth: FirebaseAuth
 
 ) : ViewModel() {
 
@@ -40,7 +38,7 @@ class LoginViewModel @Inject constructor(
 
     var isOneTapSignInSuccess by mutableStateOf(false)
 
-    var isLoading by mutableStateOf(false)
+    var isLoading by mutableStateOf(true)
 
     private var isError by mutableStateOf("")
 
@@ -49,13 +47,11 @@ class LoginViewModel @Inject constructor(
     init {
 
         viewModelScope.launch {
-
             useCases.userAuthenticatedOrNot.invoke().collect {
+
                 isUserAuthenticated = it
-
-
+                isLoading = false
             }
-
         }
     }
 

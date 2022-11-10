@@ -4,6 +4,7 @@ package com.example.mynoteapp.data
 import android.util.Log
 import com.example.mynoteapp.domian.AuthRepository
 import com.example.mynoteapp.utils.Constants
+import com.example.mynoteapp.utils.Constants.APP_TAG
 import com.example.mynoteapp.utils.Constants.CREATED_AT
 import com.example.mynoteapp.utils.Constants.DISPLAY_NAME
 import com.example.mynoteapp.utils.Constants.EMAIL
@@ -38,7 +39,8 @@ class AuthRepositoryImpl @Inject constructor(
     private val db: FirebaseFirestore
 ) : AuthRepository {
 
-    override var isUserAuthenticatedInFirebase: Flow<Boolean> = flow{ emit(fbAuth.currentUser!=null)}.flowOn(Dispatchers.IO)
+    override var isUserAuthenticatedInFirebase: Flow<Boolean> =
+        flow { emit(fbAuth.currentUser != null) }.flowOn(Dispatchers.IO)
 
 
     override suspend fun oneTapSignInWithGoogle(): Response<BeginSignInResult> {
@@ -66,9 +68,9 @@ class AuthRepositoryImpl @Inject constructor(
         return try {
             val authResult = fbAuth.signInWithCredential(googleCredential).await()
             val isNewUser = authResult.additionalUserInfo?.isNewUser ?: false
-            if (isNewUser) {
-                addUserToFireStore()
-             }
+            Log.e(APP_TAG, "isNewUser- $isNewUser" )
+            /*if (isNewUser) {}*/
+            addUserToFireStore()
             Response.Success(true)
         } catch (e: Exception) {
             Response.Failure(e)
@@ -78,7 +80,13 @@ class AuthRepositoryImpl @Inject constructor(
     private suspend fun addUserToFireStore() {
         fbAuth.currentUser?.apply {
             val user = toUser()
-            db.collection(USERS).document(uid).set(user).await()
+            db.collection(USERS).document(uid).set(user)
+                .addOnSuccessListener {
+                Log.e(APP_TAG, "userCreated- Success" )
+
+            }.addOnFailureListener {
+                Log.e(APP_TAG, "userCreated- ${it.printStackTrace()}" )
+            }.await()
         }
     }
 

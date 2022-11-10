@@ -45,25 +45,26 @@ fun Login(navController: NavController, viewModel: LoginViewModel = hiltViewMode
             }
         }
 
-    if (viewModel.isUserAuthenticated || viewModel.isOneTapSignInSuccess) {
-        navController.apply {
-            popBackStack()
-            navigate(Screens.HomeScreen.route)
-        }
 
-    } else {
+    Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
 
-        Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center)     {
+        if (viewModel.isUserAuthenticated || viewModel.isOneTapSignInSuccess) {
 
-            if (viewModel.isLoading)
-                CircularProgressIndicator()
-            else {
-                CustomLoginCard(shape = MaterialTheme.shapes.large) {
-                    viewModel.oneTap()
+            LaunchedEffect(true){
+                navController.apply {
+                    popBackStack()
+                    navigate(Screens.HomeScreen.route)
                 }
             }
         }
 
+        if (viewModel.isLoading)
+            CircularProgressIndicator()
+        else {
+            CustomLoginCard {
+                viewModel.oneTap()
+            }
+        }
     }
 
 

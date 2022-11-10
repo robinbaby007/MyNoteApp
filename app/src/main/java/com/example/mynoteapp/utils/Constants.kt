@@ -13,6 +13,8 @@ object Constants {
     const val CREATED_AT = "createdAt"
 
     const val USERS = "users"
+    const val NOTES = "notes"
+    const val APP_TAG = "NoteLogs"
 
 
 }

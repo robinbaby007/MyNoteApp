@@ -19,44 +19,41 @@ import com.example.mynoteapp.R
 
 @Composable
 fun CustomLoginCard(
-    shape: Shape,
     modifier: Modifier = Modifier,
     click: () -> Unit
 ) {
-    Card(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(30.dp)
-            .clickable {
-              click()
-            },
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-        shape = shape
-    ) {
-
-        Column(modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
-            Box(
-                modifier.padding(20.dp).border(width = 2.dp, color = Color.Gray , shape = RoundedCornerShape(10.dp)),
-            ) {
-                Row(
-                    modifier.fillMaxWidth().padding(10.dp),
-                    horizontalArrangement = Arrangement.SpaceAround,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_google),
-                        contentDescription = "google icon",
-                        modifier.size(30.dp)
-                    )
-                    Text(
-                        text = LocalContext.current.getString(R.string.login_with_google),
-                        style = MaterialTheme.typography.titleMedium
-                    )
+    Column(modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
+        Box(
+            modifier
+                .padding(20.dp)
+                .clickable {
+                    click()
                 }
-
+                .border(
+                    width = 2.dp, color = Color.Gray,
+                    shape = RoundedCornerShape(10.dp)
+                ),
+        ) {
+            Row(
+                modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                horizontalArrangement = Arrangement.SpaceAround,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_google),
+                    contentDescription = "google icon",
+                    modifier.size(30.dp)
+                )
+                Text(
+                    text = LocalContext.current.getString(R.string.login_with_google),
+                    style = MaterialTheme.typography.titleMedium
+                )
             }
 
         }
+
     }
 
 }
@@ -65,5 +62,5 @@ fun CustomLoginCard(
 @Preview
 @Composable
 fun Prev() {
-    CustomLoginCard(MaterialTheme.shapes.large) {}
+    CustomLoginCard {}
 }

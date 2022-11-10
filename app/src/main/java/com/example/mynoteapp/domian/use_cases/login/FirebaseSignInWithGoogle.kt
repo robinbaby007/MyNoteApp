@@ -1,4 +1,4 @@
-package com.example.mynoteapp.domian.use_cases
+package com.example.mynoteapp.domian.use_cases.login
 
 import com.example.mynoteapp.domian.AuthRepository
 import com.example.mynoteapp.utils.Response

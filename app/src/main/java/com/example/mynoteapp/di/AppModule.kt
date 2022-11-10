@@ -4,11 +4,14 @@ import android.app.Application
 import android.content.Context
 import com.example.mynoteapp.R
 import com.example.mynoteapp.data.AuthRepositoryImpl
+import com.example.mynoteapp.data.HomeRepositoryImpl
 import com.example.mynoteapp.domian.AuthRepository
-import com.example.mynoteapp.domian.use_cases.FirebaseSignInWithGoogle
-import com.example.mynoteapp.domian.use_cases.OneTapSignIn
+import com.example.mynoteapp.domian.HomeRepository
+import com.example.mynoteapp.domian.use_cases.login.FirebaseSignInWithGoogle
+import com.example.mynoteapp.domian.use_cases.login.OneTapSignIn
 import com.example.mynoteapp.domian.use_cases.UseCases
-import com.example.mynoteapp.domian.use_cases.UserAuthenticatedOrNot
+import com.example.mynoteapp.domian.use_cases.home.ListNotes
+import com.example.mynoteapp.domian.use_cases.login.UserAuthenticatedOrNot
 import com.example.mynoteapp.utils.Constants.SIGN_IN_REQUEST
 import com.example.mynoteapp.utils.Constants.SIGN_UP_REQUEST
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
@@ -106,11 +109,18 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideUseCase(authRepository: AuthRepository): UseCases =
+    fun provideUseCase(authRepository: AuthRepository,homeRepository: HomeRepository): UseCases =
         UseCases(
             OneTapSignIn(authRepository),
             UserAuthenticatedOrNot(authRepository),
-            FirebaseSignInWithGoogle(authRepository)
+            FirebaseSignInWithGoogle(authRepository),
+            ListNotes(homeRepository)
         )
+
+
+    @Provides
+    @Singleton
+    fun provideHomeRepository(fireStore: FirebaseFirestore, firebaseAuth: FirebaseAuth): HomeRepository =
+        HomeRepositoryImpl(fireStore,firebaseAuth)
 
 }
