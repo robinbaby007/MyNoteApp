@@ -19,6 +19,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import com.example.mynoteapp.utils.Constants
 import com.example.mynoteapp.utils.Response
 import com.example.mynoteapp.utils.Screens
 import com.google.android.gms.auth.api.identity.BeginSignInResult
@@ -48,6 +49,14 @@ fun Login(navController: NavController, viewModel: LoginViewModel = hiltViewMode
 
     Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
 
+        if (viewModel.isLoading)
+            CircularProgressIndicator()
+        else {
+            CustomLoginCard {
+                viewModel.oneTap()
+            }
+        }
+
         if (viewModel.isUserAuthenticated || viewModel.isOneTapSignInSuccess) {
 
             LaunchedEffect(true){
@@ -58,13 +67,7 @@ fun Login(navController: NavController, viewModel: LoginViewModel = hiltViewMode
             }
         }
 
-        if (viewModel.isLoading)
-            CircularProgressIndicator()
-        else {
-            CustomLoginCard {
-                viewModel.oneTap()
-            }
-        }
+
     }
 
 

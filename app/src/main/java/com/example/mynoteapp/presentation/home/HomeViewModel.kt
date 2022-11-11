@@ -1,5 +1,6 @@
 package com.example.mynoteapp.presentation.home
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
@@ -7,16 +8,18 @@ import androidx.lifecycle.viewModelScope
  import com.example.mynoteapp.domian.use_cases.UseCases
 import com.example.mynoteapp.utils.Constants
 import com.example.mynoteapp.utils.Response
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
  import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(private val useCases: UseCases)  : ViewModel() {
+class HomeViewModel @Inject constructor(private val useCases: UseCases,private val firebaseAuth: FirebaseAuth)  : ViewModel() {
 
     private val _noteList = mutableStateListOf<String>()
     val noteList : List<String> =_noteList
     var isLoading by mutableStateOf(true)
+    var userImage by mutableStateOf(Uri.EMPTY)
 
 
    init {
@@ -40,13 +43,9 @@ class HomeViewModel @Inject constructor(private val useCases: UseCases)  : ViewM
                        isLoading = false
                    }
                }
-
-
-
            }
        }
-
-
+       userImage=firebaseAuth.currentUser?.photoUrl
    }
 
 

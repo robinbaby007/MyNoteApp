@@ -48,9 +48,8 @@ class LoginViewModel @Inject constructor(
 
         viewModelScope.launch {
             useCases.userAuthenticatedOrNot.invoke().collect {
-
                 isUserAuthenticated = it
-                isLoading = false
+                isLoading = isUserAuthenticated
             }
         }
     }
