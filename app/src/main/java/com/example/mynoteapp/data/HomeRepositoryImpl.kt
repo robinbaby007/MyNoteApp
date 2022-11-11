@@ -5,6 +5,7 @@ import androidx.compose.runtime.LaunchedEffect
 import com.example.mynoteapp.domian.HomeRepository
 import com.example.mynoteapp.utils.Constants
 import com.example.mynoteapp.utils.Constants.NOTES
+import com.example.mynoteapp.utils.Response
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
@@ -20,22 +21,25 @@ import javax.inject.Inject
 class HomeRepositoryImpl @Inject constructor(
     private val fireStore: FirebaseFirestore, private val firebaseAuth: FirebaseAuth
 ) : HomeRepository {
-    override suspend fun listNotes(): Flow<List<DocumentSnapshot>> {
+    override suspend fun listNotes(): Flow<Response<List<DocumentSnapshot>>> {
         val uId = firebaseAuth.currentUser?.uid
         val noteList = mutableListOf<DocumentSnapshot>()
 
         return flow {
-
-            val response = fireStore.collection(Constants.USERS).document(uId ?: "").collection(NOTES).get().also {
-                it.await()
-            }
+            emit(Response.Loading)
+            val response =
+                fireStore.collection(Constants.USERS).document(uId ?: "").collection(NOTES).get()
+                    .also {
+                        it.await()
+                    }
             if (response.isComplete) {
                 Log.e(Constants.APP_TAG, "docSize- ${response.result.documents.size}")
                 response.result.documents.forEach {
                     noteList.add(it)
                 }
-                emit(noteList)
+                emit(Response.Success(noteList))
             } else {
+                emit(Response.Failure(response.exception.toString()))
                 Log.e(Constants.APP_TAG, "docReadException- ${response.exception}")
             }
 

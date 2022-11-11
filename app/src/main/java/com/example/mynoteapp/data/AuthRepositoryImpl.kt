@@ -56,7 +56,7 @@ class AuthRepositoryImpl @Inject constructor(
                 val signUpResult = oneTapClient.beginSignIn(signUpRequest).await()
                 Response.Success(signUpResult)
             } catch (e: Exception) {
-                Response.Failure(e)
+                Response.Failure(e.printStackTrace().toString())
             }
         }
     }
@@ -73,7 +73,7 @@ class AuthRepositoryImpl @Inject constructor(
             addUserToFireStore()
             Response.Success(true)
         } catch (e: Exception) {
-            Response.Failure(e)
+            Response.Failure(e.toString())
         }
     }
 
